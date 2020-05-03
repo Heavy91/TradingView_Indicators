@@ -8,6 +8,7 @@
 //
 // ----------------------------------------------------------------------------
 // RSI MultiTimeframe Indicator
+// Screenshot: https://www.tradingview.com/x/07iFaAR8/
 // ----------------------------------------------------------------------------
 // Plots 3 RSI (Weekly, Daily, 4h) at the same time, regardless of the Chart Timeframe.
 // Highlights in green (or red) if all RSI are oversold (or overbought).
@@ -31,7 +32,7 @@ UpperBand = input(70, title="Upper band")
 LowerBand = input(30, title="Lower band")
 
 b_color = ((RSI_3 > UpperBand)and(RSI_1 > UpperBand)and(RSI_2 > UpperBand)) ? red : ((RSI_3 < LowerBand)and(RSI_1 < LowerBand)and(RSI_2 < LowerBand)) ? green : na
-bgcolor(HighlightBreaches ? b_color : na)
+bgcolor(HighlightBreaches ? b_color : na, transp=50)
 
 h0 = hline(UpperBand, title="Upper band", linestyle=dashed, linewidth=1, color=red)
 h1 = hline(LowerBand, title="Lower band", linestyle=dashed, linewidth=1, color=green)
