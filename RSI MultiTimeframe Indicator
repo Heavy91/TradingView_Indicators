@@ -1,0 +1,41 @@
+//@version=3
+//
+// https://github.com/Heavy91/TradingView_Indicators
+//
+// If you like my work:
+// BTC: bc1q8e4wav3t55plp6ar0xc7gh4uqrzlxc7g97ywrg
+// LTC: ltc1qagcys3pyluke3xdlq94qx8p7fd3z3mj2w32grs
+//
+// ----------------------------------------------------------------------------
+// RSI MultiTimeframe Indicator
+// ----------------------------------------------------------------------------
+// Plots 3 RSI (Weekly, Daily, 4h) at the same time, regardless of the Chart Timeframe.
+// Highlights in green (or red) if all RSI are oversold (or overbought).
+// Can trigger custom oversold and overbought alerts.
+
+study(title = "RSI Multi TF", shorttitle="RSI Multi TF (W, D, 4h)")
+source = close
+length = input(14, minval=1)
+HighlightBreaches=input(true, title="Highlight Oversold and Overbought?", type=bool)
+
+// RSI
+RSI_1 = security(tickerid, "W", rsi(source, length))
+RSI_2 = security(tickerid, "D", rsi(source, length))
+RSI_3 = security(tickerid, "240", rsi(source, length))
+
+plot(RSI_3, title = "4h", color=gray, linewidth=1)
+plot(RSI_2, title = "D", color=red, linewidth=2)
+plot(RSI_1, title = "W", color=yellow, linewidth=3)
+
+UpperBand = input(70, title="Upper band")
+LowerBand = input(30, title="Lower band")
+
+b_color = ((RSI_3 > UpperBand)and(RSI_1 > UpperBand)and(RSI_2 > UpperBand)) ? red : ((RSI_3 < LowerBand)and(RSI_1 < LowerBand)and(RSI_2 < LowerBand)) ? green : na
+bgcolor(HighlightBreaches ? b_color : na)
+
+h0 = hline(UpperBand, title="Upper band", linestyle=dashed, linewidth=1, color=red)
+h1 = hline(LowerBand, title="Lower band", linestyle=dashed, linewidth=1, color=green)
+fill(h0, h1)
+
+alertcondition(b_color == green, title='MultiOversold', message='Multi Oversold!')
+alertcondition(b_color == red, title='MultiOverbought', message='Multi Overbought!')
