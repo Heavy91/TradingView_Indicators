@@ -1,0 +1,209 @@
+//@version=3
+//
+// GitHub: https://github.com/Heavy91/TradingView_Indicators
+//
+// TradingView: https://www.tradingview.com/u/Heavy91/#published-scripts
+//
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// If you like my work, you can support me with a donation:
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// €: http://pinescripts.fetchapp.com/sell/d15d4740
+//
+// $: http://pinescripts.fetchapp.com/sell/0f9153a5
+//
+// BTC: bc1q8e4wav3t55plp6ar0xc7gh4uqrzlxc7g97ywrg
+//
+// LTC: ltc1qagcys3pyluke3xdlq94qx8p7fd3z3mj2w32grs
+//
+// ----------------------------------------------------------------------------
+// MultiAverages MultiTimeframe
+// ----------------------------------------------------------------------------
+// Plots different kinds of averages ( EMA , SMA , SMMA , WMA , VWMA ) referred to a fixed timeframe, 
+// indipendent from the one that you are watching, e.g. plot daily EMA on the 1h chart. 
+// Highlights the crossing of averages.
+
+study(title="Ultimate 'Multi-Timeframe' Multi-Averages", shorttitle="MultiTF MultiAVGs", overlay=true)
+src = input(close, title="Source")
+
+//FIRST MODULE/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+I_ModuleType = input(title="Module_1: Type", type=string, defval="EMA", options=["EMA", "SMMA", "SMA", "WMA", "VolumeWMA"])
+I_ModuleTF = input(title="Module_1: Timeframe (W, D, [minutes])", type=string, defval="D")
+I_PlotAVGcross = input(title="Module_I: Highlight the crossing(AVGs 2 & 3)", type=bool, defval=true)
+
+I_AVGLenght = input(title="Average_1.1: Lenght", type=integer, defval=9, minval=1) 
+II_AVGLenght = input(title="Average_1.2: Lenght", type=integer, defval=50, minval=1)
+III_AVGLenght = input(title="Average_1.3: Lenght", type=integer, defval=200, minval=1)
+
+//1st Average//////////////////////////////////////////////////////////////////////////////
+I_EMA = security(tickerid, I_ModuleTF, ema(src, I_AVGLenght))
+I_SMA = security(tickerid, I_ModuleTF, sma(src, I_AVGLenght))
+I_SMMA = security(tickerid, I_ModuleTF, rma(src, I_AVGLenght))
+I_VWMA = security(tickerid, I_ModuleTF, vwma(src, I_AVGLenght))
+I_WMA = security(tickerid, I_ModuleTF, wma(src, I_AVGLenght))
+
+I_AVG = if (I_ModuleType == 'EMA')
+    I_EMA
+else 
+    if (I_ModuleType == "SMA")
+        I_SMA
+    else
+        if (I_ModuleType == "SMMA")
+            I_SMMA
+        else
+            if (I_ModuleType == "VolumeWMA")
+                I_VWMA
+            else
+                if (I_ModuleType == "WMA")
+                    I_WMA
+                else
+                    na
+plot(I_AVG,title="AVG_1.1",  color=red, transp=0, linewidth=3)
+
+////2nd Average////////////////////////////////////////////////////////////////////////
+II_EMA = security(tickerid, I_ModuleTF, ema(src, II_AVGLenght))
+II_SMA = security(tickerid, I_ModuleTF, sma(src, II_AVGLenght))
+II_SMMA = security(tickerid, I_ModuleTF, rma(src, II_AVGLenght))
+II_VWMA = security(tickerid, I_ModuleTF, vwma(src, II_AVGLenght))
+II_WMA = security(tickerid, I_ModuleTF, wma(src, II_AVGLenght))
+
+II_AVG = if (I_ModuleType == 'EMA')
+    II_EMA
+else 
+    if (I_ModuleType == "SMA")
+        II_SMA
+    else
+        if (I_ModuleType == "SMMA")
+            II_SMMA
+        else
+            if (I_ModuleType == "VolumeWMA")
+                II_VWMA
+            else
+                if (I_ModuleType == "WMA")
+                    II_WMA
+                else
+                    na
+                
+plot(II_AVG, title="AVG_1.2", color=green, transp=0, linewidth=3)
+
+//3rd Average//////////////////////////////////////////////////////////////////////////////
+III_EMA = security(tickerid, I_ModuleTF, ema(src, III_AVGLenght))
+III_SMA = security(tickerid, I_ModuleTF, sma(src, III_AVGLenght))
+III_SMMA = security(tickerid, I_ModuleTF, rma(src, III_AVGLenght))
+III_VWMA = security(tickerid, I_ModuleTF, vwma(src, III_AVGLenght))
+III_WMA = security(tickerid, I_ModuleTF, wma(src, III_AVGLenght))
+
+III_AVG = if (I_ModuleType == 'EMA')
+    III_EMA
+else 
+    if (I_ModuleType == "SMA")
+        III_SMA
+    else
+        if (I_ModuleType == "SMMA")
+            III_SMMA
+        else
+            if (I_ModuleType == "VolumeWMA")
+                III_VWMA
+            else
+                if (I_ModuleType == "WMA")
+                    III_WMA
+                else
+                    na
+plot(III_AVG, title="AVG_1.3", color=blue, transp=0, linewidth=3)  
+
+//plot ((cross(I_AVG, II_AVG) and I_PlotAVGcross) ? I_AVG : na, title="Cross 1.1 & 1.2", style = circles, color = yellow,  linewidth = 5, trackprice = false)
+//plot ((cross(I_AVG, III_AVG) and I_PlotAVGcross) ? I_AVG : na, title="Cross 1.1 & 1.3", style = circles, color = yellow,  linewidth = 5, trackprice = false)
+plot ((cross(II_AVG, III_AVG) and I_PlotAVGcross) ? II_AVG : na, title="Cross 1.2 & 1.3", style = circles, color = ((II_AVG > III_AVG) ? green : red),  linewidth = 5, trackprice = false)
+
+//SECOND MODULE/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+II_ModuleType = input(title="Module_2: Type", type=string, defval="SMMA", options=["EMA", "SMMA", "SMA", "WMA", "VolumeWMA"])
+TFfromChart = input(title="use timeframe of the chart", type=bool, defval=true)
+II_ModuleTF = if(TFfromChart)
+    period
+else
+    input(title="Module_2: Timeframe (W, D, [minutes])", type=string, defval="240")
+
+II_PlotAVGcross = input(title="Module_II: Highlight the crossing(AVGs 2 & 3)", type=bool, defval=true)
+
+I2_AVGLenght = input(title="Average_2.1: Lenght", type=integer, defval=9, minval=1) 
+II2_AVGLenght = input(title="Average_2.2: Lenght", type=integer, defval=50, minval=1)
+III2_AVGLenght = input(title="Average_2.3: Lenght", type=integer, defval=200, minval=1)
+
+//1st Average//////////////////////////////////////////////////////////////////////////////
+I2_EMA = security(tickerid, II_ModuleTF, ema(src, I2_AVGLenght))
+I2_SMA = security(tickerid, II_ModuleTF, sma(src, I2_AVGLenght))
+I2_SMMA = security(tickerid, II_ModuleTF, rma(src, I2_AVGLenght))
+I2_VWMA = security(tickerid, II_ModuleTF, vwma(src, I2_AVGLenght))
+I2_WMA = security(tickerid, II_ModuleTF, wma(src, I2_AVGLenght))
+
+I2_AVG = if (II_ModuleType == 'EMA')
+    I2_EMA
+else 
+    if (II_ModuleType == "SMA")
+        I2_SMA
+    else
+        if (II_ModuleType == "SMMA")
+            I2_SMMA
+        else
+            if (II_ModuleType == "VolumeWMA")
+                I2_VWMA
+            else
+                if (II_ModuleType == "WMA")
+                    I2_WMA
+                else
+                    na
+plot(I2_AVG,title="AVG_2.1",  color=orange, transp=0, linewidth=1)
+
+////2nd Average////////////////////////////////////////////////////////////////////////
+II2_EMA = security(tickerid, II_ModuleTF, ema(src, II2_AVGLenght))
+II2_SMA = security(tickerid, II_ModuleTF, sma(src, II2_AVGLenght))
+II2_SMMA = security(tickerid, II_ModuleTF, rma(src, II2_AVGLenght))
+II2_VWMA = security(tickerid, II_ModuleTF, vwma(src, II2_AVGLenght))
+II2_WMA = security(tickerid, II_ModuleTF, wma(src, II2_AVGLenght))
+
+II2_AVG = if (II_ModuleType == 'EMA')
+    II2_EMA
+else 
+    if (II_ModuleType == "SMA")
+        II2_SMA
+    else
+        if (II_ModuleType == "SMMA")
+            II2_SMMA
+        else
+            if (II_ModuleType == "VolumeWMA")
+                II2_VWMA
+            else
+                if (II_ModuleType == "WMA")
+                    II2_WMA
+                else
+                    na
+                
+plot(II2_AVG, title="AVG_2.2", color=lime, transp=0, linewidth=1)
+
+//3rd Average//////////////////////////////////////////////////////////////////////////////
+III2_EMA = security(tickerid, II_ModuleTF, ema(src, III2_AVGLenght))
+III2_SMA = security(tickerid, II_ModuleTF, sma(src, III2_AVGLenght))
+III2_SMMA = security(tickerid, II_ModuleTF, rma(src, III2_AVGLenght))
+III2_VWMA = security(tickerid, II_ModuleTF, vwma(src, III2_AVGLenght))
+III2_WMA = security(tickerid, II_ModuleTF, wma(src, III2_AVGLenght))
+
+III2_AVG = if (II_ModuleType == 'EMA')
+    III2_EMA
+else 
+    if (II_ModuleType == "SMA")
+        III2_SMA
+    else
+        if (II_ModuleType == "SMMA")
+            III2_SMMA
+        else
+            if (II_ModuleType == "VolumeWMA")
+                III2_VWMA
+            else
+                if (II_ModuleType == "WMA")
+                    III2_WMA
+                else
+                    na
+plot(III2_AVG, title="AVG_2.3", color=aqua, transp=0, linewidth=1)  
+
+//plot ((cross(I2_AVG, II2_AVG) and II_PlotAVGcross) ? I2_AVG : na, title="Cross 2.1 & 2.2", style = circles, color = aqua,  linewidth = 4, trackprice = false)
+//plot ((cross(I2_AVG, III2_AVG) and II_PlotAVGcross) ? I2_AVG : na, title="Cross 2.1 & 2.3", style = circles, color = aqua,  linewidth = 4, trackprice = false)
+plot ((cross(II2_AVG, III2_AVG) and II_PlotAVGcross) ? II2_AVG : na, title="Cross 2.2 & 2.3", style = cross, color = ((II2_AVG > III2_AVG) ? green : red),  linewidth = 4, trackprice = false)
