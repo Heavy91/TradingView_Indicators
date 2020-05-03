@@ -26,4 +26,16 @@
   Draws supply and demand zones based on 3 different volume threshold parameters.
   The timeframe of the script is fixed (you can change it in the options), 
   e.g. it is possible to keep Daily S/D zones while looking at 1h chart.
+  
+- **MultiAverages MultiTimeframe:**
+  Plots different kinds of averages ( EMA , SMA , SMMA , WMA , VWMA ) referred to a fixed timeframe, indipendent from   the one that you are watching, e.g. plot daily EMA on the 1h chart.
+  Highlights the crossing of averages.
 
+## Strategies:
+
+- **Failure Swing:**
+  This strategy is a first attempt to countertrade the false break of a key support/resistance.
+  If a candle breaks the level, but it comes back before the close, it will trigger an order.
+  The Stop Loss is in %, the Take Profit is near the EMA.
+  The *volatility filter* is used to block new orders when the price is near the EMA.
+  The *volatility adjustment* coefficients calibrate Stop Loss and Take Profit values according to the current volatility.
