@@ -33,7 +33,7 @@
 
 ## Strategies:
 
-- **Failure Swing (stop hinting):**
+- **Failure Swing (stop hunting):**
   This strategy is a first attempt to countertrade the false break of a key support/resistance.
   If a candle breaks the level, but it comes back before the close, it will trigger an order.
   The Stop Loss is in %, the Take Profit is near the EMA.
